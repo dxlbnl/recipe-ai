@@ -1,2 +1,18 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<main>
+	<form method="POST">
+		<label>
+			URL:
+			<input type="text" name="url" />
+		</label>
+
+		<button>Submit</button>
+	</form>
+</main>
+
+<style>
+	main {
+		height: 100dvh;
+		display: grid;
+		place-items: center;
+	}
+</style>
