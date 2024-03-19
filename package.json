@@ -12,7 +12,9 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+    "generate": "drizzle-kit generate:pg",
+    "push": "drizzle-kit push:pg"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
@@ -22,6 +24,7 @@
 		"@types/eslint": "^8.56.0",
 		"@typescript-eslint/eslint-plugin": "^7.0.0",
 		"@typescript-eslint/parser": "^7.0.0",
+		"drizzle-kit": "^0.20.14",
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.36.0-next.4",
@@ -36,8 +39,16 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@langchain/core": "^0.1.48",
+		"@langchain/openai": "^0.0.20",
+		"@supabase/supabase-js": "^2.39.8",
+		"cheerio": "1.0.0-rc.12",
 		"dotenv": "^16.4.5",
+		"drizzle-orm": "^0.30.2",
+		"langchain": "^0.1.28",
 		"openai": "^4.29.0",
+		"postgres": "^3.4.3",
+		"sveltekit-superforms": "^2.9.0",
 		"zod": "^3.22.4",
 		"zod-to-ts": "^1.2.0"
 	}

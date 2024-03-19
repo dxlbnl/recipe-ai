@@ -1,68 +1,45 @@
 import 'dotenv/config';
-import OpenAI from 'openai';
-import z from 'zod';
-import { printNode, zodToTs } from 'zod-to-ts';
+import { CheerioWebBaseLoader } from 'langchain/document_loaders/web/cheerio';
+// Only required in a Deno notebook environment to load the peer dep.
+import 'cheerio';
+import { ChatPromptTemplate } from '@langchain/core/prompts';
+import { ChatOpenAI } from '@langchain/openai';
+import { resultSchema } from '$lib/schemas';
 
-const ingredientsSchema = z.string().array().describe('The list of ingredients');
+const SYSTEM_PROMPT_TEMPLATE = [
+	'You are an expert at reading recipes in text.',
+	'Extract all relevant information on the recipe. Extract nothing if no important information can be found in the text.'
+].join('\n');
 
-const recipeSchema = z.object({
-	name: z.string().describe('A concise descriptive name for the recipe'),
-	ingredients: z
-		.union([
-			ingredientsSchema.describe('If the ingredients are a plain list'),
-			z
-				.record(z.string().describe('The name of the group of ingredients'), ingredientsSchema)
-				.describe('If ingredients are grouped in the source keep the grouping.')
-		])
-		.describe("Follow the source's grouping"),
+// Define a custom prompt to provide instructions and any additional context.
+// 1) You can add examples into the prompt template to improve extraction quality
+// 2) Introduce additional parameters to take context into account (e.g., include metadata
+//    about the document from which the text was extracted.)
+const prompt = ChatPromptTemplate.fromMessages([
+	['system', SYSTEM_PROMPT_TEMPLATE],
+	// Keep on reading through this use case to see how to use examples to improve performance
+	// MessagesPlaceholder('examples'),
+	['human', '{text}']
+]);
 
-	steps: z.union([
-		z.array(z.string()).describe('The steps of the recipe.'),
-		z
-			.record(
-				z.string().describe('Name of the group of steps'),
-				z.array(z.string()).describe('The steps of the recipe.')
-			)
-			.describe('If steps are grouped in the source keep the grouping.')
-	])
+// We will be using tool calling mode, which
+// requires a tool calling capable model.
+const llm = new ChatOpenAI({
+	modelName: 'gpt-4-0125-preview',
+	temperature: 0
 });
 
-const resultSchema = z.object({
-	result: recipeSchema.optional().describe("Only fill this object when there's data"),
-	error: z.string().describe('Reason why not able to fill result.')
-});
-
-const openai = new OpenAI();
+const extractionChain = prompt.pipe(llm.withStructuredOutput(resultSchema));
 
 export async function formatRecipe(url: string) {
-	const response = await fetch(url);
-	if (!response.ok) {
-		console.error(`Failed to fetch '${url}'`);
-	}
+	const loader = new CheerioWebBaseLoader(url);
 
-	if (!response.headers.get('content-type')?.startsWith('text/html')) {
-		console.warn('body is not html', response.headers.get('content-type'));
-	}
-	const html = await response.text();
+	const docs = await loader.load();
 
-	const completion = await openai.chat.completions.create({
-		messages: [
-			{ role: 'system', content: 'You are a master at scraping and parsing raw HTML.' },
-			{
-				role: 'system',
-				content:
-					'Analyze the webpage and extract all information. Respond only as a JSON document, and strictly conform to the following typescript schema, paying attention to comments as requirements:\n\n' +
-					printNode(zodToTs(resultSchema).node) +
-					'try to structure the data following the provided JSON schema info'
-			},
-			{ role: 'user', content: html }
-		],
-		model: 'gpt-4-turbo-preview',
-		// model: 'gpt-3.5-turbo-0125',
-		response_format: { type: 'json_object' }
-	});
+	const result = await extractionChain.invoke({ text: docs[0].pageContent });
 
-	return completion;
+	console.log(result);
+	return result;
 }
 
 // formatRecipe('https://www.lowcarbchef.nl/recept/mexicaans-stoofvlees');
