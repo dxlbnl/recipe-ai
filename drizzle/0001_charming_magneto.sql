@@ -19,3 +19,24 @@ BEGIN
   RETURN trim(BOTH '-' FROM regexp_replace(lower(unaccent(trim(v))), '[^a-z0-9\-_]+', '-', 'gi'));
 END;
 $function$;
+
+CREATE SEQUENCE serial START 1;
+
+CREATE FUNCTION public.set_slug_from_name()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.slug := slugify(NEW.name);
+  IF (SELECT COUNT(slug) FROM recipes WHERE slug = NEW.slug) >= 1 THEN
+    NEW.slug := NEW.slug || '-' || nextval('serial');
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER "trg_slug_insert"
+BEFORE INSERT ON "recipes"
+FOR EACH ROW
+WHEN (NEW.name IS NOT NULL AND NEW.slug IS NULL)
+EXECUTE PROCEDURE set_slug_from_name();
+view raw

@@ -13,8 +13,8 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-    "generate": "drizzle-kit generate:pg",
-    "push": "drizzle-kit push:pg"
+		"generate": "drizzle-kit generate:pg",
+		"push": "drizzle-kit push:pg"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
@@ -47,6 +47,7 @@
 		"drizzle-orm": "^0.30.2",
 		"langchain": "^0.1.28",
 		"openai": "^4.29.0",
+		"pg": "^8.11.3",
 		"postgres": "^3.4.3",
 		"sveltekit-superforms": "^2.9.0",
 		"zod": "^3.22.4",
