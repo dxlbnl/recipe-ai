@@ -9,6 +9,8 @@ export const ingredientsSchema = z.string().array().describe('The list of ingred
 
 export const recipeSchema = z.object({
 	name: z.string().describe('A concise descriptive name for the recipe'),
+	portions: z.number().describe('The amount of portions the recipe is sized for'),
+	tags: z.string().array().describe('A few relevant tags describing the dish'),
 	ingredients: z
 		.union([
 			ingredientsSchema.describe('If the ingredients are a plain list'),

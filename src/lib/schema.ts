@@ -6,6 +6,8 @@ export const recipes = pgTable('recipes', {
 	name: varchar('name'),
 	url: varchar('url'),
 	rating: integer('rating'),
+	tags: jsonb('tags'),
+	portions: integer('portions'),
 	ingredients: jsonb('ingredients').$type<Recipe['ingredients']>(),
 	steps: jsonb('steps').$type<Recipe['steps']>()
 });

@@ -38,7 +38,6 @@ export async function formatRecipe(url: string) {
 
 	const result = await extractionChain.invoke({ text: docs[0].pageContent });
 
-	console.log(result);
 	return result;
 }
 
