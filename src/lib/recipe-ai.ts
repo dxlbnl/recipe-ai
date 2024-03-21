@@ -32,12 +32,14 @@ const llm = new ChatOpenAI({
 const extractionChain = prompt.pipe(llm.withStructuredOutput(resultSchema));
 
 export async function formatRecipe(url: string) {
+	console.log('Loading url', url);
 	const loader = new CheerioWebBaseLoader(url);
 
 	const docs = await loader.load();
+	console.log('Got data, extracting recipe');
 
 	const result = await extractionChain.invoke({ text: docs[0].pageContent });
-
+	console.log('Done extracting recipe', result.error);
 	return result;
 }
 

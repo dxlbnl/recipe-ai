@@ -8,12 +8,20 @@ import { formatRecipe } from '$lib/recipe-ai';
 
 import { db } from '$lib/db';
 import { recipes } from '$lib/schema';
+import { count, eq, sql } from 'drizzle-orm';
 
 export const load = async () => {
 	const form = await superValidate(zod(urlSchema));
 
+	const allRecipes = await db
+		.select({
+			name: recipes.name,
+			slug: recipes.slug
+		})
+		.from(recipes);
+
 	// Always return { form } in load functions
-	return { form };
+	return { form, allRecipes };
 };
 
 export const actions = {
@@ -24,16 +32,30 @@ export const actions = {
 			// Again, return { form } and things will just work.
 			return fail(400, { form });
 		}
+		const url = form.data.url;
 
-		console.log(form.data.url);
-		const { result, error } = await formatRecipe(form.data.url);
+		console.log('- Received url', form.data.url);
+
+		const [{ value }] = await db
+			.select({ value: count() })
+			.from(recipes)
+			.where(eq(recipes.url, url));
+
+		console.log('value', value);
+
+		if (value != 0) {
+			console.error('Already known url', url);
+			return fail(400, { form });
+		}
+
+		const { result, error } = await formatRecipe(url);
 
 		if (!result) {
 			console.log('Failed to find recipe', error);
 			return fail(404, { form });
 		}
 
-		console.log('recopes', result);
+		console.log('- Recipes', result);
 		await db.insert(recipes).values({
 			slug: '',
 			name: result.name,
@@ -41,7 +63,7 @@ export const actions = {
 			portions: result.portions,
 			tags: result.tags,
 			ingredients: result.ingredients,
-			url: form.data.url
+			url: url
 		});
 
 		// Display a success status message
