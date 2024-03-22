@@ -7,7 +7,7 @@ import { urlSchema } from '$lib/schemas';
 import { formatRecipe } from '$lib/recipe-ai';
 
 import { db } from '$lib/db';
-import { recipes } from '$lib/schema';
+import { recipes } from '$lib/db/schema';
 import { count, eq, sql } from 'drizzle-orm';
 
 export const load = async () => {
