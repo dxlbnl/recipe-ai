@@ -23,6 +23,9 @@ dependencies:
   drizzle-orm:
     specifier: ^0.30.2
     version: 0.30.2(pg@8.11.3)(postgres@3.4.3)
+  drizzle-zod:
+    specifier: ^0.5.1
+    version: 0.5.1(drizzle-orm@0.30.2)(zod@3.22.4)
   langchain:
     specifier: ^0.1.28
     version: 0.1.28(@supabase/supabase-js@2.39.8)(cheerio@1.0.0-rc.12)(pg@8.11.3)
@@ -38,6 +41,9 @@ dependencies:
   sveltekit-superforms:
     specifier: ^2.9.0
     version: 2.9.0(@sveltejs/kit@2.5.4)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.19.12)(svelte@5.0.0-next.78)
+  xstate:
+    specifier: ^5.9.1
+    version: 5.9.1
   zod:
     specifier: ^3.22.4
     version: 3.22.4
@@ -2097,6 +2103,16 @@ packages:
     dependencies:
       pg: 8.11.3
       postgres: 3.4.3
+    dev: false
+
+  /drizzle-zod@0.5.1(drizzle-orm@0.30.2)(zod@3.22.4):
+    resolution: {integrity: sha512-C/8bvzUH/zSnVfwdSibOgFjLhtDtbKYmkbPbUCq46QZyZCH6kODIMSOgZ8R7rVjoI+tCj3k06MRJMDqsIeoS4A==}
+    peerDependencies:
+      drizzle-orm: '>=0.23.13'
+      zod: '*'
+    dependencies:
+      drizzle-orm: 0.30.2(pg@8.11.3)(postgres@3.4.3)
+      zod: 3.22.4
     dev: false
 
   /entities@4.5.0:
@@ -4446,6 +4462,10 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: false
+
+  /xstate@5.9.1:
+    resolution: {integrity: sha512-85edx7iMqRJSRlEPevDwc98EWDYUlT5zEQ54AXuRVR+G76gFbcVTAUdtAeqOVxy8zYnUr9FBB5114iK6enljjw==}
     dev: false
 
   /xtend@4.0.2:
