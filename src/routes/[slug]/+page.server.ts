@@ -1,5 +1,5 @@
 import { db } from '$lib/db';
-import { recipes } from '$lib/schema';
+import { recipes } from '$lib/db/schema';
 import { eq } from 'drizzle-orm';
 
 export const load = async ({ params }) => {
