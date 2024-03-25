@@ -1,7 +1,7 @@
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const config = {
-	runtime: 'nodejs'
+	runtime: 'nodejs20.x'
 };
 
 // POST url: -> return uuid
