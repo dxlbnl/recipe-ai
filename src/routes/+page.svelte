@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms';
 	import type { PageData } from './$types';
+	import ProcessRecipe from './ProcessRecipe.svelte';
 
 	export let data: PageData;
 
@@ -11,7 +12,11 @@
 	<ul>
 		{#each data.allRecipes as recipe}
 			<li>
-				<a href="/{recipe.slug}">{recipe.name}</a>
+				{#if recipe.name}
+					<a href="/{recipe.slug}">{recipe.name}</a>
+				{:else}
+					<ProcessRecipe id={recipe.id} />
+				{/if}
 			</li>
 		{/each}
 	</ul>

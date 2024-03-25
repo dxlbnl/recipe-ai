@@ -36,5 +36,5 @@ export type Recipe = z.infer<typeof recipeSchema>;
 
 export const resultSchema = z.object({
 	result: recipeSchema.optional().describe("Only fill this object when there's data"),
-	error: z.string().describe('Reason why not able to fill result.')
+	error: z.string().optional().describe('Reason why not able to fill result.')
 });

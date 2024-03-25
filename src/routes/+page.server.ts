@@ -15,6 +15,7 @@ export const load = async () => {
 	const allRecipes = await db
 		.select({
 			name: recipes.name,
+			id: recipes.id,
 			slug: recipes.slug
 		})
 		.from(recipes);
