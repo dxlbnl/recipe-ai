@@ -1,4 +1,4 @@
-import { createMachine } from 'npm:xstate';
+import { createMachine } from 'xstate';
 
 // setup({
 // 	types: {

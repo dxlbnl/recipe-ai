@@ -2,7 +2,8 @@ import z from 'zod';
 
 // Define outside the load function so the adapter can be cached
 export const urlSchema = z.object({
-	url: z.string().url()
+	url: z.string().url(),
+	processImmediately: z.boolean()
 });
 
 export const ingredientsSchema = z.string().array().describe('The list of ingredients');

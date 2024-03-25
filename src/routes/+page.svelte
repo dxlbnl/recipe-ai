@@ -31,6 +31,11 @@
 		</label>
 		{#if $errors.url}<span class="invalid">{$errors.url}</span>{/if}
 
+		<label>
+			Process immediately
+			<input type="checkbox" name="processImmediately" bind:value={$form.processImmediately} />
+		</label>
+
 		<button disabled={$submitting}>Submit</button>
 	</form>
 </main>

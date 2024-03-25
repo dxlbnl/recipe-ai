@@ -8,7 +8,7 @@ import { formatRecipe } from '$lib/recipe-ai';
 
 import { db } from '$lib/db';
 import { recipes } from '$lib/db/schema';
-import { count, eq, sql } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 
 export const load = async () => {
 	const form = await superValidate(zod(urlSchema));
@@ -48,23 +48,28 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const { result, error } = await formatRecipe(url);
+		if (form.data.processImmediately) {
+			const { result, error } = await formatRecipe(url);
 
-		if (!result) {
-			console.log('Failed to find recipe', error);
-			return fail(404, { form });
+			if (!result) {
+				console.log('Failed to find recipe', error);
+				return fail(404, { form });
+			}
+
+			console.log('- Recipes', result);
+			await db.insert(recipes).values({
+				name: result.name,
+				steps: result.steps,
+				portions: result.portions,
+				tags: result.tags,
+				ingredients: result.ingredients,
+				url: url
+			});
+		} else {
+			await db.insert(recipes).values({
+				url: url
+			});
 		}
-
-		console.log('- Recipes', result);
-		await db.insert(recipes).values({
-			slug: '',
-			name: result.name,
-			steps: result.steps,
-			portions: result.portions,
-			tags: result.tags,
-			ingredients: result.ingredients,
-			url: url
-		});
 
 		// Display a success status message
 		return message(form, 'Form posted successfully!');

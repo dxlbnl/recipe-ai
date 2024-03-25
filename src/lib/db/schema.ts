@@ -1,10 +1,11 @@
-import { pgTable, integer, jsonb, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, integer, jsonb, varchar, uuid } from 'drizzle-orm/pg-core';
 import { type Recipe } from '$lib/schemas';
 import { createInsertSchema } from 'drizzle-zod';
 import z from 'zod';
 
 export const recipes = pgTable('recipes', {
-	slug: varchar('slug').primaryKey(),
+	id: uuid('id').defaultRandom().primaryKey(),
+	slug: varchar('slug').unique(),
 	name: varchar('name'),
 	url: varchar('url').unique(),
 	rating: integer('rating'),
