@@ -1,6 +1,6 @@
 import { pgTable, integer, jsonb, varchar, uuid } from 'drizzle-orm/pg-core';
 import { type Recipe } from '$lib/schemas';
-import { createInsertSchema } from 'drizzle-zod';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import z from 'zod';
 
 export const recipes = pgTable('recipes', {
@@ -14,5 +14,9 @@ export const recipes = pgTable('recipes', {
 	ingredients: jsonb('ingredients').$type<Recipe['ingredients']>(),
 	steps: jsonb('steps').$type<Recipe['steps']>()
 });
-export const insertUserSchema = createInsertSchema(recipes);
-export type InsertUser = z.infer<typeof insertUserSchema>;
+
+export const insertRecipeSchema = createInsertSchema(recipes);
+export type InsertRecipe = z.infer<typeof insertRecipeSchema>;
+
+export const selectRecipeSchema = createSelectSchema(recipes);
+export type SelectRecipe = z.infer<typeof selectRecipeSchema>;

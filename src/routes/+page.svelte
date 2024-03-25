@@ -19,24 +19,26 @@
 	{#if $message}<h3>{$message}</h3>{/if}
 
 	<form method="POST" use:enhance>
-		<label>
-			URL:
-			<input
-				type="text"
-				name="url"
-				aria-invalid={$errors.url ? 'true' : undefined}
-				bind:value={$form.url}
-				disabled={$submitting}
-			/>
-		</label>
-		{#if $errors.url}<span class="invalid">{$errors.url}</span>{/if}
+		<section>
+			<label>
+				URL:
+				<input
+					type="text"
+					name="url"
+					aria-invalid={$errors.url ? 'true' : undefined}
+					bind:value={$form.url}
+					disabled={$submitting}
+				/>
+			</label>
+			{#if $errors.url}<span class="invalid">{$errors.url}</span>{/if}
 
-		<label>
-			Process immediately
-			<input type="checkbox" name="processImmediately" bind:value={$form.processImmediately} />
-		</label>
+			<label>
+				Process immediately
+				<input type="checkbox" name="processImmediately" bind:checked={$form.processImmediately} />
+			</label>
 
-		<button disabled={$submitting}>Submit</button>
+			<button disabled={$submitting}>Submit</button>
+		</section>
 	</form>
 </main>
 
@@ -49,5 +51,9 @@
 		height: 100dvh;
 		display: grid;
 		place-items: center;
+	}
+
+	section {
+		display: grid;
 	}
 </style>

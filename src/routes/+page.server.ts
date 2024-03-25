@@ -1,5 +1,4 @@
-import { fail } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import { fail, type Actions } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -57,18 +56,27 @@ export const actions = {
 			}
 
 			console.log('- Recipes', result);
-			await db.insert(recipes).values({
-				name: result.name,
-				steps: result.steps,
-				portions: result.portions,
-				tags: result.tags,
-				ingredients: result.ingredients,
-				url: url
-			});
+			const [newForm] = await db
+				.insert(recipes)
+				.values({
+					name: result.name,
+					steps: result.steps,
+					portions: result.portions,
+					tags: result.tags,
+					ingredients: result.ingredients,
+					url: url
+				})
+				.returning();
+
+			form.data.newForm = newForm.id;
 		} else {
-			await db.insert(recipes).values({
-				url: url
-			});
+			const [newForm] = await db
+				.insert(recipes)
+				.values({
+					url: url
+				})
+				.returning();
+			form.data.newForm = newForm.id;
 		}
 
 		// Display a success status message
